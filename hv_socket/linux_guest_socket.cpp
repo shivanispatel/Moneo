@@ -1,4 +1,5 @@
 #include <sys/socket.h>
+#include <linux/vm_sockets.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <stdio.h>
@@ -8,16 +9,19 @@
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 3333
 
+/*
 struct GUID {
     unsigned long Data1;
     unsigned short Data2;
     unsigned short Data3;
     unsigned char Data4[8];
 } VmId, ServiceId;
+*/
 
 
 int main(void)
 {
+    /*
     // Get the VM GUID using this command -> (Get-VM -Name $VMName).Id
     // VM GUID: {21f743a1-cf47-4b32-9b69-4cb84412b0d4}
     VmId.Data1 = 569852833; // 0x21f743a1;
@@ -45,30 +49,39 @@ int main(void)
     ServiceId.Data4[5] = 0x2e;
     ServiceId.Data4[6] = 0x00;
     ServiceId.Data4[7] = 0xbe;
-
-
+    */
 
     int ConnectSocket = -1;
     struct sockaddr_in server;
+    struct sockaddr_vm addr;
 
     const char *sendbuf = "this is a test"; // TO DO : replace this?
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN;
  
+    /*
     // add your own input here
     const GUID *vmId = &VmId;
     const GUID *serviceId = &ServiceId;
+    */
+
+   // 
+   addr.svm_family = AF_VSOCK;
+   addr.svm_reserved1 = 0;
+   addr.svm_port = DEFAULT_PORT;
+   addr.svm_cid = VMADDR_CID_HOST;
+   
 
     // Set server address
-    server.sin_addr.s_addr = inet_addr("127.0.0.1"); // Replace with the actual server
-    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = inet_addr("172.21.16.1"); // Replace with the actual server
+    server.sin_family = AF_VSOCK;
     server.sin_port = htons(DEFAULT_PORT); // Convert port to network byte order
  
   
  
     // CREATE SOCKET ----------------------------------------------------
-    ConnectSocket = socket(AF_INET, SOCK_STREAM, 0);
+    ConnectSocket = socket(AF_VSOCK, SOCK_STREAM, 0);
     if (ConnectSocket == -1) {
         perror("Could not create socket. Error");
         return 1;
@@ -79,7 +92,8 @@ int main(void)
  
 
     // CONNECT TO SERVER ----------------------------------------------------
-    iResult = connect(ConnectSocket, (struct sockaddr*)&server, sizeof(server));
+    iResult = connect(ConnectSocket, (struct sockaddr*)&addr, sizeof(addr));
+    printf("Attempting to connect to server . . .\n");
     if (iResult == -1) {
         perror("Connect failed. Error");
         close(ConnectSocket);

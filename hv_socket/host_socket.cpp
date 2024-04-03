@@ -20,10 +20,12 @@
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "3333" // TO DO : "27015" from the docs; but when I created the service I used 3333 somewhere?
 
+// VM GUID: {21f743a1-cf47-4b32-9b69-4cb84412b0d4}
+DEFINE_GUID(VmId, 0x21f743a1, 0xcf47, 0x4b32, 0x9b, 0x69, 0x4c, 0xb8, 0x44, 0x12, 0xb0, 0xd4);
+
 // TO DO : this GUID will need to be updated according to the service
 // Service GUID: {00000d05-efea-4d26-b17d-d547c42e00be}
-DEFINE_GUID(ServiceId,
-    0x00000d05, 0xefea, 0x4d26, 0xb1, 0x7d, 0xd5, 0x47, 0xc4, 0x2e, 0x00, 0xbe);
+DEFINE_GUID(ServiceId, 0x00000d05, 0xefea, 0x4d26, 0xb1, 0x7d, 0xd5, 0x47, 0xc4, 0x2e, 0x00, 0xbe);
 
 int main(void)
 {     
@@ -58,7 +60,7 @@ int main(void)
     // use the Hyper-V socket family and protocol
     ZeroMemory(&sockaddr_hr, sizeof(sockaddr_hr));
     sockaddr_hr.Family = AF_HYPERV;
-    sockaddr_hr.VmId = HV_GUID_ZERO;
+    sockaddr_hr.VmId = HV_GUID_CHILDREN; // HV_GUID_ZERO;
     sockaddr_hr.ServiceId = *serviceId;
  
     ZeroMemory(&hints, sizeof(hints));
@@ -69,22 +71,7 @@ int main(void)
  
     hints.ai_addrlen = sizeof(SOCKADDR_HV);
     hints.ai_addr = reinterpret_cast<SOCKADDR *>(&sockaddr_hr);
-
-    // TO DO : do I need this? from the documentation "creating a socket for the server"
-    // Resolve the local address and port to be used by the server
-    // it looks like things are being written to hints, but the code I have also writes to hints
     
-    /*
-    iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
-    if (iResult != 0) {
-        printf("getaddrinfo failed: %d\n", iResult);
-        WSACleanup();
-        return 1;
-    }
-    */
-    
-    
-
  
     // CREATE SOCKET ----------------------------------------------------
 
@@ -124,10 +111,7 @@ int main(void)
         WSACleanup();
         return 1;
     }
-    else {
-        printf("socket bound successfully\n");
-    }
-    // TO DO : extra check for WSINEVAL testing
+
     if (iResult == 0){
         printf("socket bound successfully\n");
     }
