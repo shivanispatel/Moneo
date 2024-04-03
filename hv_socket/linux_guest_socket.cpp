@@ -52,8 +52,8 @@ int main(void)
     */
 
     int ConnectSocket = -1;
-    struct sockaddr_in server;
-    struct sockaddr_vm addr;
+    struct sockaddr_in server = { 0 };
+    struct sockaddr_vm addr = { 0 };
 
     const char *sendbuf = "this is a test"; // TO DO : replace this?
     char recvbuf[DEFAULT_BUFLEN];
@@ -70,15 +70,8 @@ int main(void)
    addr.svm_family = AF_VSOCK;
    addr.svm_reserved1 = 0;
    addr.svm_port = DEFAULT_PORT;
-   addr.svm_cid = VMADDR_CID_HOST;
-   
+   addr.svm_cid = ac.19.74.ed; // 172.25.116.237
 
-    // Set server address
-    server.sin_addr.s_addr = inet_addr("172.21.16.1"); // Replace with the actual server
-    server.sin_family = AF_VSOCK;
-    server.sin_port = htons(DEFAULT_PORT); // Convert port to network byte order
- 
-  
  
     // CREATE SOCKET ----------------------------------------------------
     ConnectSocket = socket(AF_VSOCK, SOCK_STREAM, 0);

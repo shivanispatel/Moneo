@@ -1,14 +1,12 @@
+/*
 #define WIN32_LEAN_AND_MEAN
-
 #define HV_PROTOCOL_RAW 1
 #define _WINNT_WIN32 0x0601
+*/
 
 #include <winsock2.h>
-// #include <windows.h>
 #include <ws2tcpip.h>
 #include <stdio.h>
-// #include <tchar.h>
-// #include <objbase.h>
 #include <hvsocket.h>
 
 #ifndef AF_HYPERV
@@ -60,7 +58,7 @@ int main(void)
     // use the Hyper-V socket family and protocol
     ZeroMemory(&sockaddr_hr, sizeof(sockaddr_hr));
     sockaddr_hr.Family = AF_HYPERV;
-    sockaddr_hr.VmId = HV_GUID_CHILDREN; // HV_GUID_ZERO;
+    sockaddr_hr.VmId = HV_GUID_WILDCARD; // HV_GUID_ZERO;
     sockaddr_hr.ServiceId = *serviceId;
  
     ZeroMemory(&hints, sizeof(hints));
