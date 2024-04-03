@@ -70,17 +70,23 @@ int main(void)
     // CREATE SOCKET ----------------------------------------------------
     ConnectSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (ConnectSocket == -1) {
-        perror("could not create socket. Error");
+        perror("Could not create socket. Error");
         return 1;
+    }
+    else {
+        printf("Socket created\n");
     }
  
 
     // CONNECT TO SERVER ----------------------------------------------------
-    iResult = connect(ConnectSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    iResult = connect(ConnectSocket, (struct sockaddr*)&server, sizeof(server));
     if (iResult == -1) {
-        perror("connect failed. Error");
+        perror("Connect failed. Error");
         close(ConnectSocket);
         return 1;
+    }
+    else {
+        printf("Connected to server\n");
     }
  
     // SEND INITIAL BUFFER ----------------------------------------------------
@@ -93,8 +99,10 @@ int main(void)
         close(ConnectSocket);
         return 1;
     }
-    printf("Bytes Sent: %d\n", iResult);
- 
+    else {
+        printf("Bytes Sent: %d\n", iResult);
+    }
+
 
     // SHUTDOWN CONNECTION ----------------------------------------------------
     // shutdown the connection since no more data will be sent
@@ -103,6 +111,9 @@ int main(void)
         perror("shutdown failed with error.");
         close(ConnectSocket);
         return 1;
+    }
+    else {
+        printf("Shutdown successful\n");
     }
  
     // Receive until the peer closes the connection
