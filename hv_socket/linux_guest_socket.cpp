@@ -16,19 +16,10 @@ struct GUID {
 } VmId, ServiceId;
 
 
-// Get the VM GUID using this command -> (Get-VM -Name $VMName).Id
-// VM GUID: {21f743a1-cf47-4b32-9b69-4cb84412b0d4}
-DEFINE_GUID(VmId,
-    0x21f743a1, 0xcf47, 0x4b32, 0x9b, 0x69, 0x4c, 0xb8, 0x44, 0x12, 0xb0, 0xd4);
-
-// TO DO : this GUID will need to be updated according to the service
-// Service GUID: {00000d05-efea-4d26-b17d-d547c42e00be}
-DEFINE_GUID(ServiceId,
-    0x00000d05, 0xefea, 0x4d26, 0xb1, 0x7d, 0xd5, 0x47, 0xc4, 0x2e, 0x00, 0xbe);
- 
 int __cdecl main(void)
 {
-
+    // Get the VM GUID using this command -> (Get-VM -Name $VMName).Id
+    // VM GUID: {21f743a1-cf47-4b32-9b69-4cb84412b0d4}
     VmId.Data1 = 569852833; // 0x21f743a1;
     VmId.Data2 = 53063; // 0xcf47;
     VmId.Data3 = 19250; // 0x4b32;
@@ -41,6 +32,8 @@ int __cdecl main(void)
     VmId.Data4[6] = 0xb0;
     VmId.Data4[7] = 0xd4;
 
+    // TO DO : this GUID will need to be updated according to the service
+    // Service GUID: {00000d05-efea-4d26-b17d-d547c42e00be}
     ServiceId.Data1 = 533; // 0x00000d05;
     ServiceId.Data2 = 61162; // 0xefea;
     ServiceId.Data3 = 19750; // 0x4d26;
