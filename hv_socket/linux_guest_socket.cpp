@@ -16,7 +16,7 @@ struct GUID {
 } VmId, ServiceId;
 
 
-int __cdecl main(void)
+int main(void)
 {
     // Get the VM GUID using this command -> (Get-VM -Name $VMName).Id
     // VM GUID: {21f743a1-cf47-4b32-9b69-4cb84412b0d4}
