@@ -50,7 +50,6 @@ int main(void)
 
     int ConnectSocket = -1;
     struct sockaddr_in server;
-    SOCKADDR_HV clientService;
     const char *sendbuf = "this is a test"; // TO DO : replace this?
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
@@ -101,7 +100,7 @@ int main(void)
     // create a while loop here to continuously send data?
     iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
     if (iResult == SOCKET_ERROR) {
-        printf("send failed with error: %d\n", WSAGetLastError());
+        perror("send failed with error.");
         close(ConnectSocket);
         return 1;
     }
@@ -113,7 +112,7 @@ int main(void)
     // shutdown the connection since no more data will be sent
     iResult = shutdown(ConnectSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
-        printf("shutdown failed with error: %d\n", WSAGetLastError());
+        perror("send failed with error.");
         close(ConnectSocket);
         return 1;
     }
@@ -127,7 +126,7 @@ int main(void)
         else if (iResult == 0)
             printf("Connection closed\n");
         else
-            printf("recv failed with error: %d\n", WSAGetLastError());
+            perror("send failed with error.");
  
     } while (iResult > 0);
  
