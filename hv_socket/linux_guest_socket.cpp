@@ -50,6 +50,7 @@ int main(void)
 
     int ConnectSocket = -1;
     struct sockaddr_in server;
+
     const char *sendbuf = "this is a test"; // TO DO : replace this?
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
@@ -59,38 +60,26 @@ int main(void)
     const GUID *vmId = &VmId;
     const GUID *serviceId = &ServiceId;
 
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    // Set server address
+    server.sin_addr.s_addr = inet_addr("127.0.0.1"); // Replace with the actual server
     server.sin_family = AF_INET;
-    server.sin_port = htons(DEFAULT_PORT);
+    server.sin_port = htons(DEFAULT_PORT); // Convert port to network byte order
  
- 
-    // SOCK SPECIFICATIONS ----------------------------------------------------
-    // use the Hyper-V socket family and protocol
-    ZeroMemory(&clientService, sizeof(clientService));
-    clientService.Family = AF_VSOCK;
-    clientService.VmId = *vmId;
-    clientService.ServiceId = *serviceId;
- 
-    ZeroMemory(&hints, sizeof(hints));
-    hints.ai_family = AF_VSOCK; // for linux // TO DO : why undefined?
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = 0; // for linux guest
- 
-    hints.ai_addrlen = sizeof(SOCKADDR_HV);
-    hints.ai_addr = reinterpret_cast<SOCKADDR *>(&clientService);
-
+  
  
     // CREATE SOCKET ----------------------------------------------------
     ConnectSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (ConnectSocket == -1) {
-        perror("Could not create socket");
+        perror("could not create socket. Error");
         return 1;
     }
  
 
     // CONNECT TO SERVER ----------------------------------------------------
-    if (connect(ConnectSocket, (struct sockaddr *)&server, sizeof(server)) < 0) {
+    iResult = connect(ConnectSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    if (iResult == -1) {
         perror("connect failed. Error");
+        close(ConnectSocket);
         return 1;
     }
  
@@ -99,20 +88,19 @@ int main(void)
     // TO DO : so sendBuf would need to be modified 
     // create a while loop here to continuously send data?
     iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
-    if (iResult == SOCKET_ERROR) {
-        perror("send failed with error.");
+    if (iResult == -1) {
+        perror("send failed. Error");
         close(ConnectSocket);
         return 1;
     }
- 
-    printf("Bytes Sent: %ld\n", iResult);
+    printf("Bytes Sent: %d\n", iResult);
  
 
     // SHUTDOWN CONNECTION ----------------------------------------------------
     // shutdown the connection since no more data will be sent
-    iResult = shutdown(ConnectSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
-        perror("send failed with error.");
+    iResult = shutdown(ConnectSocket, SHUT_WR);
+    if (iResult == -1) {
+        perror("shutdown failed with error.");
         close(ConnectSocket);
         return 1;
     }
