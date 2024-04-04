@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT 3333
+#define DEFAULT_PORT 139
 
 /*
 struct GUID {
@@ -70,7 +70,10 @@ int main(void)
    addr.svm_family = AF_VSOCK;
    addr.svm_reserved1 = 0;
    addr.svm_port = DEFAULT_PORT;
-   addr.svm_cid = ac.19.74.ed; // 172.25.116.237
+   addr.svm_cid = VMADDR_CID_HOST; // 172.25.116.237
+
+   unsigned char svm_zero[sizeof(struct sockaddr) - sizeof(sa_family_t) - sizeof(unsigned short) - sizeof(unsigned int) - sizeof(unsigned int)];
+};
 
  
     // CREATE SOCKET ----------------------------------------------------
